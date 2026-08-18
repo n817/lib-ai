@@ -1,5 +1,7 @@
 import express from 'express';
 
+import mainRouter from "./routes/index.js";
+
 const app = express();
 const port = 3000;
 
@@ -11,6 +13,8 @@ app.get("/health", (req, res): void => {
     "error": null
   });
 });
+
+app.use("/", mainRouter);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
