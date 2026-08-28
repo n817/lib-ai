@@ -1,9 +1,12 @@
 import express from 'express';
 
+import { logger } from './middleware/logger.js';
 import mainRouter from "./routes/index.js";
 
 const app = express();
 const port = 3000;
+
+app.use(logger);
 
 // health check route
 app.get("/health", (req, res): void => {
@@ -13,6 +16,8 @@ app.get("/health", (req, res): void => {
     "error": null
   });
 });
+
+app.use(express.json());
 
 app.use("/", mainRouter);
 
