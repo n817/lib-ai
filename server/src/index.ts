@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { logger } from './middleware/logger.js';
+import { errorHandler, notFoundHandler } from './middleware/error.js';
 import mainRouter from "./routes/index.js";
 
 const app = express();
@@ -20,6 +21,9 @@ app.get("/health", (req, res): void => {
 app.use(express.json());
 
 app.use("/", mainRouter);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
