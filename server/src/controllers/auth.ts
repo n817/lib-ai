@@ -9,7 +9,7 @@ export const register = (req: Request, res: Response): void => {
   });
 };
 
-// Authenticate user by email/password (POST /auth/login )
+// Authenticate user by email/password (POST /auth/login)
 export const login = (req: Request, res: Response): void => {
   res.status(200).json({
     success: true,

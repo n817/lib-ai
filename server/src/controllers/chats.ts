@@ -9,7 +9,7 @@ export const getChats = (req: Request, res: Response): void => {
   });
 };
 
-// Fetch one chat by ID (GET /chats/:id )
+// Fetch one chat by ID (GET /chats/:id)
 export const getChat = (req: Request, res: Response): void => {
   res.status(200).json({
     success: true,
@@ -27,7 +27,7 @@ export const createChat = (req: Request, res: Response): void => {
   });
 };
 
-// Delete a chat (DELETE /chats/:id )
+// Delete a chat (DELETE /chats/:id)
 export const deleteChat = (req: Request, res: Response): void => {
   res.status(204).send();
 };
