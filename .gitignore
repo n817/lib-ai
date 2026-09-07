@@ -2,6 +2,13 @@
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+dist-ssr
+*.local
+.vite
 
 # Generated files
 node_modules
@@ -14,6 +21,18 @@ dist
 .DS_Store
 .idea
 .vscode
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Secrets
 .env
+
+# Uploads
+uploads
+*.pdf
