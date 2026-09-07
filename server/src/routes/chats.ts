@@ -1,12 +1,13 @@
 import { Router } from 'express';
+
+import { auth } from '../middleware/auth.js';
 import {
   getChats,
   getChat,
   createChat,
   deleteChat,
-  sendMessage,
 } from '../controllers/chats.js';
-import { auth } from '../middleware/auth.js';
+import { createMessage } from '../controllers/messages.js';
 
 const chatsRouter = Router();
 
@@ -16,6 +17,6 @@ chatsRouter.get('/', getChats);
 chatsRouter.get('/:id', getChat);
 chatsRouter.post('/', createChat);
 chatsRouter.delete('/:id', deleteChat);
-chatsRouter.post('/:id/messages', sendMessage);
+chatsRouter.post('/:id/messages', createMessage);
 
 export { chatsRouter };
