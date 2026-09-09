@@ -2,7 +2,7 @@
   display: flex;
   flex: 1;
   font-size: 14px;
-  color: #1c1c1c;
+  color: rgb(28, 28, 28);
 }
 
 .chat::after {
@@ -50,6 +50,10 @@
   background-color: rgb(150 121 217 / 0.2);
 }
 
+.chat__title-input {
+  margin-bottom: 12px;
+}
+
 .chat__list {
   list-style-type: none;
 }
@@ -67,6 +71,6 @@
 }
 
 .chat__list-item:hover {
-  color: #a179d9;
+  color: rgb(161, 121, 217);
   cursor: pointer;
 }
