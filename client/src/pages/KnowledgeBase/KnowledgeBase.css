@@ -51,7 +51,7 @@
 .knowledge-base__delete-button {
   width: 16px;
   height: 16px;
-  background-image: url("../../assets/x-icon.svg");
+  background-image: url("../../assets/close.svg");
   background-repeat: no-repeat;
   background-color: transparent;
   border: none;

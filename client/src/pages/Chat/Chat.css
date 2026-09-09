@@ -1,0 +1,72 @@
+.chat {
+  display: flex;
+  flex: 1;
+  font-size: 14px;
+  color: #1c1c1c;
+}
+
+.chat::after {
+  content: "";
+  height: 340px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, transparent 0%, #fff 35%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.chat__sidebar {
+  position: fixed;
+  top: 78px;
+  left: 20px;
+  bottom: 0;
+  max-width: 220px;
+  width: 100%;
+}
+
+.chat__new-button {
+  max-width: 220px;
+  width: 100%;
+  border: 1px solid rgba(150, 121, 217, 0.2);
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 9.5px 12px;
+  margin-bottom: 12px;
+}
+
+.chat__new-button::before {
+  content: "";
+  background-image: url("../../assets/plus.svg");
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.chat__new-button:hover {
+  background-color: rgb(150 121 217 / 0.2);
+}
+
+.chat__list {
+  list-style-type: none;
+}
+
+.chat__list-item {
+  max-width: 220px;
+  width: 100%;
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.chat__list-item_active {
+  color: rgb(150 121 217);
+  background-color: rgb(150 121 217 / 0.2);
+}
+
+.chat__list-item:hover {
+  color: #a179d9;
+  cursor: pointer;
+}
