@@ -2,5 +2,33 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 10px 20px;
+}
+
+.header__logo {
+  width: 25px;
+  height: 25px;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header__nav-link {
+  font-size: 16px;
+  line-height: 1.2;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 8.5px 12px;
+}
+
+.header__nav-link_active {
+  background-color: rgb(150 121 217 / 0.2);
+}
+
+.header__nav-link:hover {
+  background-color: rgb(150 121 217 / 0.1);
 }
