@@ -1,8 +1,18 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import ReactMarkdown from "react-markdown";
 
 import "./Chat.css";
 
-import { getChats, createChat, type Chat as ChatType } from "../../utils/api";
+import {
+  getChats,
+  getChat,
+  createChat,
+  type Chat as ChatType,
+  type Message,
+} from "../../utils/api";
+
+import ErrorImg from "../../assets/error.svg";
 
 export default function Chat() {
   // Chat state variables
@@ -12,6 +22,13 @@ export default function Chat() {
   const [isLoadingChats, setIsLoadingChat] = useState<boolean>(true);
   const [isCreatingChat, setIsCreatingChat] = useState<boolean>(false);
   const [newChatTitle, setNewChatTitle] = useState<string>("");
+
+  // Messages state variables
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
+  const [messagesError, setMessagesError] = useState<string>("");
+
+  const navigate = useNavigate();
 
   // Load existing chats
   useEffect(() => {
@@ -28,6 +45,27 @@ export default function Chat() {
 
     load();
   }, []);
+
+  // Load messages when a chat is selected
+  useEffect(() => {
+    if (!activeChatId) return; // If activeChatId isn't set, return early
+
+    const load = async () => {
+      setMessages([]); // Clear messages
+      setIsLoadingMessages(true); // Set isLoadingMessages to true
+      setMessagesError(""); // Clear messagesError
+      try {
+        const res = await getChat(activeChatId); // call getChat(activeChatId) and await the result
+        setMessages(res.data?.messages || []); // set messages to res.data?.messages, or an empty array if falsy
+      } catch {
+        setMessagesError("Failed to load messages."); // set messagesError to an error message
+      } finally {
+        setIsLoadingMessages(false); // set isLoadingMessages to false
+      }
+    };
+
+    load();
+  }, [activeChatId]);
 
   const handleCreateChat = async () => {
     const title = newChatTitle.trim() || "New Chat";
@@ -46,6 +84,7 @@ export default function Chat() {
 
   return (
     <div className="chat">
+      {/* Sidebar */}
       <aside className="chat__sidebar">
         <button
           className="chat__new-button"
@@ -87,7 +126,7 @@ export default function Chat() {
               }
               onClick={() => {
                 setActiveChatId(c._id);
-                setIsMobileMenuOpen(false);
+                // setIsMobileMenuOpen(false);
               }}
             >
               {c.title}
@@ -96,7 +135,95 @@ export default function Chat() {
         </ul>
       </aside>
 
-      <div className="chat__main"></div>
+      {/* Chat */}
+      <div className="chat__main">
+        {/* No chats or no selected chat, no errors, not loading */}
+        {!messagesError && !isLoadingMessages && !activeChatId && (
+          <div className="chat__container chat__container_type_no-messages">
+            <h1 className="chat__title">
+              Create a new chat or select an existing chat to start the
+              conversation
+            </h1>
+            <button
+              type="button"
+              className="chat__standard-btn"
+              onClick={() => {
+                setIsCreatingChat(true);
+                // setIsMobileMenuOpen(true);
+              }}
+            >
+              Start New Chat
+            </button>
+          </div>
+        )}
+
+        {/* Chat selected, but no messages */}
+        {!messagesError &&
+          !isLoadingMessages &&
+          activeChatId &&
+          messages.length === 0 && (
+            <div className="chat__container chat__container_type_no-messages">
+              <h1 className="chat__title">
+                Ask a question below to start the conversation
+              </h1>
+            </div>
+          )}
+
+        {/* Loading */}
+        {activeChatId && isLoadingMessages && (
+          <div className="chat__container chat__container_type_no-messages">
+            <p className="chat__title">Loading messages...</p>
+          </div>
+        )}
+
+        {/* Error */}
+        {activeChatId && messagesError && (
+          <div className="chat__container chat__container_type_error">
+            <img src={ErrorImg} alt="" className="chat__error-img" />
+            <h1 className="chat__title chat__title_type_error">
+              Looks like something went wrong
+            </h1>
+            <p className="chat__error-action">
+              Try reloading the page or creating the chat again
+            </p>
+            <button
+              type="button"
+              className="chat__standard-btn"
+              onClick={() => navigate("/")}
+            >
+              Go to the main page
+            </button>
+          </div>
+        )}
+
+        {/* Messages */}
+        {activeChatId && !isLoadingMessages && !messagesError && (
+          <ul className="chat__container chat__container_type_messages">
+            {messages.map((msg) => (
+              <li
+                key={msg._id}
+                className={
+                  msg.role === "user"
+                    ? "chat__message chat__message_type_user"
+                    : "chat__message chat__message_type_assistant"
+                }
+              >
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
+              </li>
+            ))}
+            {/* {isSending && (
+              <li className="chat__message chat__message_assistant chat__message_thinking">
+                Thinking…
+              </li>
+            )}
+            <li ref={messagesEndRef} /> */}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
