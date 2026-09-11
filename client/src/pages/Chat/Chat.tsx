@@ -8,6 +8,7 @@ import {
   getChats,
   getChat,
   createChat,
+  sendMessage,
   type Chat as ChatType,
   type Message,
 } from "../../utils/api";
@@ -28,9 +29,13 @@ export default function Chat() {
   const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
   const [messagesError, setMessagesError] = useState<string>("");
 
+  // Input state variables
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+
   const navigate = useNavigate();
 
-  // Load existing chats
+  // Load existing chats list
   useEffect(() => {
     const load = async () => {
       try {
@@ -67,6 +72,7 @@ export default function Chat() {
     load();
   }, [activeChatId]);
 
+  // Create new chat
   const handleCreateChat = async () => {
     const title = newChatTitle.trim() || "New Chat";
     // Set isCreatingChat and newChatTitle back to default values
@@ -81,6 +87,52 @@ export default function Chat() {
       }
     } catch {}
   };
+
+  // Message send handler
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !activeChatId || isSending) return;
+
+    const userMessage: Message = {
+      _id: Date.now().toString(),
+      chatId: activeChatId,
+      role: "user",
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Append userMessage to the thread, clear the input, and set isSending to true
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsSending(true);
+
+    try {
+      const res = await sendMessage(activeChatId, text);
+      if (res.data) {
+        setMessages((prev) => [...prev, res.data!]);
+      }
+    } catch {
+      // Append an error Message to the thread
+      const errorMessage: Message = {
+        _id: Date.now().toString(),
+        chatId: activeChatId,
+        role: "assistant",
+        content: "Something went wrong. Please try again.",
+        createdAt: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Enter key support
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+ if (e.key === "Enter" && !e.shiftKey) {
+   e.preventDefault();
+   handleSend();
+ }
+};
 
   return (
     <div className="chat">
@@ -198,30 +250,48 @@ export default function Chat() {
 
         {/* Messages */}
         {activeChatId && !isLoadingMessages && !messagesError && (
-          <ul className="chat__container chat__container_type_messages">
-            {messages.map((msg) => (
-              <li
-                key={msg._id}
-                className={
-                  msg.role === "user"
-                    ? "chat__message chat__message_type_user"
-                    : "chat__message chat__message_type_assistant"
-                }
-              >
-                {msg.role === "assistant" ? (
-                  <ReactMarkdown>{msg.content}</ReactMarkdown>
-                ) : (
-                  msg.content
-                )}
-              </li>
-            ))}
-            {/* {isSending && (
-              <li className="chat__message chat__message_assistant chat__message_thinking">
-                Thinking…
-              </li>
-            )}
-            <li ref={messagesEndRef} /> */}
-          </ul>
+          <>
+            <ul className="chat__container chat__container_type_messages">
+              {messages.map((msg) => (
+                <li
+                  key={msg._id}
+                  className={
+                    msg.role === "user"
+                      ? "chat__message chat__message_type_user"
+                      : "chat__message chat__message_type_assistant"
+                  }
+                >
+                  {msg.role === "assistant" ? (
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  ) : (
+                    msg.content
+                  )}
+                </li>
+              ))}
+              {isSending && (
+                <li className="chat__message chat__message_assistant chat__message_type_thinking">
+                  Thinking…
+                </li>
+              )}
+              {/* <li ref={messagesEndRef} /> */}
+            </ul>
+            <div className="chat__input-bar">
+              <textarea
+                className="chat__input"
+                placeholder="Ask any question"
+                rows={1}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                className="chat__send-button"
+                aria-label="Send message"
+                onClick={handleSend}
+                disabled={isSending || !input.trim()}
+              ></button>
+            </div>
+          </>
         )}
       </div>
     </div>
