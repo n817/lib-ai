@@ -1,6 +1,10 @@
+import type { CurrentUser } from "../types";
+
+const BASE_URL = "/api";
+
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-export type KnowledgeDoc = {
+export type LibraryDoc = {
   _id: string;
   title: string;
   fileName: string;
@@ -29,7 +33,61 @@ export type ApiResponse<T> = {
   error: { message: string } | null;
 };
 
-export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<ApiResponse<T>> {
+  const token = localStorage.getItem("auth-token") ?? "";
+
+  const res = await fetch(path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+
+  if (res.status === 401) {
+    const body = await res.json().catch(() => null);
+    const message = body?.error?.message || "Invalid credentials";
+    if (localStorage.getItem("auth-token")) {
+      localStorage.removeItem("auth-token");
+      window.location.href = "/login";
+    }
+    throw new Error(message);
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error?.message || "Request failed");
+  }
+
+  return res.json();
+}
+
+export function getCurrentUser() {
+  return request<CurrentUser>(`${BASE_URL}/users/me`);
+}
+
+export function loginUser(email: string, password: string) {
+  return request<{ token: string; user: CurrentUser }>(
+    `${BASE_URL}/auth/login`,
+    {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    },
+  );
+}
+
+export function registerUser(name: string, email: string, password: string) {
+  return request<{ user: CurrentUser }>(`${BASE_URL}/auth/register`, {
+    method: "POST",
+    body: JSON.stringify({ email, password, name }),
+  });
+}
+
+export const getDocuments = async (): Promise<ApiResponse<LibraryDoc[]>> => {
   await delay(700);
   return {
     success: true,
@@ -114,7 +172,7 @@ export const getChat = async (
         chatId: id,
         role: "assistant",
         content:
-          "**PostHog** is an **open-source product analytics platform** that helps teams understand **how users actually use their product**, not just how many users they have.\n\nUnlike tools that focus mainly on pageviews or dashboards, PostHog is built around events, behavior, and experimentation — with strong control over data ownership (cloud or self-hosted).\n\n---\n\n## What PostHog is (in simple terms)\n\nPostHog lets you answer questions like:\n\n- *What do users do after signing up?*\n- *Where do they drop off?*\n- *Which feature actually brings value?*\n- *Did this design change improve behavior or not?*\n\nIt combines:\n\n- Product analytics (events, funnels, retention)\n- Session recordings\n- Feature flags\n- A/B testing\n- Data warehouse sync\n\nAll in one platform.\n\n---\n\n## How you use PostHog (high level)\n\n1. **Track events** in your app\n\n   (e.g. `Signed up`, `Clicked \"Generate\"`, `Uploaded PDF`)\n\n2. **Attach properties**\n\n   (plan type, device, country, company size, etc.)\n\n3. **Analyze behavior** using:\n\n   - Funnels\n   - Trends\n   - Retention\n   - User paths\n\n4. **Experiment & iterate**\n\n   Turn features on/off, run A/B tests, watch recordings",
+          '**PostHog** is an **open-source product analytics platform** that helps teams understand **how users actually use their product**, not just how many users they have.\n\nUnlike tools that focus mainly on pageviews or dashboards, PostHog is built around events, behavior, and experimentation — with strong control over data ownership (cloud or self-hosted).\n\n---\n\n## What PostHog is (in simple terms)\n\nPostHog lets you answer questions like:\n\n- *What do users do after signing up?*\n- *Where do they drop off?*\n- *Which feature actually brings value?*\n- *Did this design change improve behavior or not?*\n\nIt combines:\n\n- Product analytics (events, funnels, retention)\n- Session recordings\n- Feature flags\n- A/B testing\n- Data warehouse sync\n\nAll in one platform.\n\n---\n\n## How you use PostHog (high level)\n\n1. **Track events** in your app\n\n   (e.g. `Signed up`, `Clicked "Generate"`, `Uploaded PDF`)\n\n2. **Attach properties**\n\n   (plan type, device, country, company size, etc.)\n\n3. **Analyze behavior** using:\n\n   - Funnels\n   - Trends\n   - Retention\n   - User paths\n\n4. **Experiment & iterate**\n\n   Turn features on/off, run A/B tests, watch recordings',
         createdAt: new Date().toISOString(),
       },
       {
@@ -170,7 +228,8 @@ export const getChat = async (
         _id: "m9",
         chatId: id,
         role: "user",
-        content: "I have a marketing hypothesis I'd like to test. Users who read the onboarding guide convert to paid plans at a higher rate. How should I test this?",
+        content:
+          "I have a marketing hypothesis I'd like to test. Users who read the onboarding guide convert to paid plans at a higher rate. How should I test this?",
         createdAt: new Date().toISOString(),
       },
       {

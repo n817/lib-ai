@@ -5,7 +5,7 @@ import Intro from "../../pages/Intro/Intro";
 import AppLayout from "../AppLayout/AppLayout";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
-import KnowledgeBase from "../../pages/KnowledgeBase/KnowledgeBase";
+import Library from "../../pages/Library/Library";
 import Chat from "../../pages/Chat/Chat";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<AppLayout />}>
-          <Route path="/knowledge-base" element={<KnowledgeBase />} />
+          <Route path="/library" element={<Library />} />
           <Route path="/chat" element={<Chat />} />
         </Route>
       </Routes>

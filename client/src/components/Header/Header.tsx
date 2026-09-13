@@ -33,11 +33,11 @@ export default function Header({
       <img src={Logo} alt="bioAI logo" className="header__logo" />
       <nav className={isMobileMenuOpen ? "header__nav header__nav_type_mobile" : "header__nav"}>
         <NavLink
-          to="/knowledge-base"
+          to="/library"
           className={getNavLinkClass}
           onClick={onMenuClose}
         >
-          Knowledge Base
+          Library
         </NavLink>
         <NavLink to="/chat" className={getNavLinkClass} onClick={onMenuClose}>
           Chat

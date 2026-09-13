@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
-import "./KnowledgeBase.css";
+import "./Library.css";
 
 import UploadArea from "../../components/UploadArea/UploadArea";
-import { getDocuments, type KnowledgeDoc } from "../../utils/api";
+import { getDocuments, type LibraryDoc } from "../../utils/api";
 
-export default function KnowledgeBase() {
-  const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
+export default function Library() {
+  const [documents, setDocuments] = useState<LibraryDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +26,7 @@ export default function KnowledgeBase() {
   }, []);
 
   const handleFileSelect = (file: File) => {
-    const newDoc: KnowledgeDoc = {
+    const newDoc: LibraryDoc = {
       _id: Date.now().toString(),
       title: file.name,
       fileName: file.name,
@@ -37,48 +37,48 @@ export default function KnowledgeBase() {
   };
 
   return (
-    <div className="knowledge-base">
-      <h1 className="knowledge-base__title">Manage Your Knowledge Base</h1>
-      <section className="knowledge-base__content">
-        <p className="knowledge-base__text">
+    <div className="library">
+      <h1 className="library__title">Manage Your Library</h1>
+      <section className="library__content">
+        <p className="library__text">
           Upload documents (PDF)
         </p>
         <UploadArea onFileSelect={handleFileSelect}></UploadArea>
 
         {isLoading && (
-          <p className="knowledge-base__text knowledge-base__text_type_message">
+          <p className="library__text library__text_type_message">
             Loading documents…
           </p>
         )}
 
         {!isLoading && !error && documents.length === 0 && (
-          <p className="knowledge-base__text knowledge-base__text_type_message">
+          <p className="library__text library__text_type_message">
             No documents yet.
           </p>
         )}
 
         {!isLoading && error && (
-          <p className="knowledge-base__text knowledge-base__text_type_error">
+          <p className="library__text library__text_type_error">
             {error}
           </p>
         )}
 
         {/* Rendering the list */}
         {!isLoading && !error && documents.length > 0 && (
-          <ul className="knowledge-base__list">
+          <ul className="library__list">
             {documents.map((doc) => (
-              <li key={doc._id} className="knowledge-base__list-item">
+              <li key={doc._id} className="library__list-item">
                 {doc.fileName}
                 <button
                   type="button"
-                  className="knowledge-base__delete-button"
+                  className="library__delete-button"
                   aria-label="delete document"
                 ></button>
               </li>
             ))}
           </ul>
         )}
-        <button className="knowledge-base__save-button">Save</button>
+        <button className="library__save-button">Save</button>
       </section>
     </div>
   );

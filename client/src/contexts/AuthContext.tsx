@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-// import { getCurrentUser } from "../utils/api";
+import { getCurrentUser } from "../utils/api";
 import type { CurrentUser } from "../types";
 
 type AuthContextValue = {
@@ -35,26 +35,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setCurrentUser(null);
   }
 
-//   useEffect(() => {
-//     const token = localStorage.getItem("auth-token");
-//     if (!token) {
-//       setIsLoading(false);
-//       return;
-//     }
-//     getCurrentUser()
-//       .then((res) => {
-//         if (res.data) {
-//           setCurrentUser(res.data);
-//           setIsAuthenticated(true);
-//         }
-//       })
-//       .catch(() => {
-//         localStorage.removeItem("auth-token");
-//       })
-//       .finally(() => {
-//         setIsLoading(false);
-//       });
-//   }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+    getCurrentUser()
+      .then((res) => {
+        if (res.data) {
+          setCurrentUser(res.data);
+          setIsAuthenticated(true);
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("auth-token");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <AuthContext.Provider

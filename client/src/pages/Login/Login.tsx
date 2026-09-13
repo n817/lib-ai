@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
+import { useAuth } from "../../contexts/AuthContext";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 import Logo from "../../assets/logo.svg";
+
+import { loginUser } from "../../utils/api";
 
 function getNavLinkClass({ isActive }: { isActive: boolean }) {
   return isActive ? "form__nav-link form__nav-link_active" : "form__nav-link";
@@ -12,13 +15,31 @@ function getNavLinkClass({ isActive }: { isActive: boolean }) {
 export default function Login() {
   const [submitError, setSubmitError] = useState("");
   const { values, errors, isValid, handleChange } = useFormWithValidation();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleSubmit(event: React.SubmitEvent) {
+    event.preventDefault();
+    if (!isValid) return;
+    try {
+      const res = await loginUser(values.email, values.password);
+      if (res.data) {
+        login(res.data.token, res.data.user);
+        navigate("/library");
+      }
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : "Something went wrong",
+      );
+    }
+  }
 
   return (
     <>
       <header className="header">
         <img src={Logo} alt="bioAI logo" className="header__logo" />
       </header>
-      <form className="form" noValidate>
+      <form className="form" noValidate onSubmit={handleSubmit}>
         <h1 className="form__title">Sign in</h1>
         <p className="form__description">
           Access your organisation's secure workspace
