@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router";
 
 import Header from "../Header/Header";
@@ -5,12 +6,26 @@ import Header from "../Header/Header";
 import "./AppLayout.css";
 
 export default function AppLayout() {
- return (
-   <div className="app-layout">
-     <Header />
-       <main className="app-layout__main">
-         <Outlet />
-       </main>
-   </div>
-   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <div className="app-layout">
+      <Header
+        onMenuOpen={() => setIsMobileMenuOpen(true)}
+        onMenuClose={() => setIsMobileMenuOpen(false)}
+        isMobileMenuOpen={isMobileMenuOpen}
+      />
+
+      {isMobileMenuOpen && (
+        <div
+          className="app-layout__backdrop"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      <main className="app-layout__main">
+        <Outlet context={{ isMobileMenuOpen, setIsMobileMenuOpen }} />
+      </main>
+    </div>
+  );
 }

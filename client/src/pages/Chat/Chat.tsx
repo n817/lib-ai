@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import ReactMarkdown from "react-markdown";
 
 import "./Chat.css";
@@ -14,6 +14,11 @@ import {
 } from "../../utils/api";
 
 import ErrorImg from "../../assets/error.svg";
+
+type MobileContext = {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
+};
 
 export default function Chat() {
   // Chat state variables
@@ -32,6 +37,10 @@ export default function Chat() {
   // Input state variables
   const [isSending, setIsSending] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
+
+  // Mobile sidebar state from AppLayout
+  const { isMobileMenuOpen, setIsMobileMenuOpen } =
+    useOutletContext<MobileContext>();
 
   const navigate = useNavigate();
 
@@ -84,6 +93,7 @@ export default function Chat() {
         // Prepend the new chat and select it
         setChats((prev) => [res.data!, ...prev]);
         setActiveChatId(res.data._id);
+        setIsMobileMenuOpen(false); // Close the sidebar after a new chat is created.
       }
     } catch {}
   };
@@ -128,16 +138,20 @@ export default function Chat() {
 
   // Enter key support
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
- if (e.key === "Enter" && !e.shiftKey) {
-   e.preventDefault();
-   handleSend();
- }
-};
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
     <div className="chat">
       {/* Sidebar */}
-      <aside className="chat__sidebar">
+      <aside
+        className={`chat__sidebar${
+          isMobileMenuOpen ? " chat__sidebar_is-open" : ""
+        }`}
+      >
         <button
           className="chat__new-button"
           type="button"
@@ -178,7 +192,7 @@ export default function Chat() {
               }
               onClick={() => {
                 setActiveChatId(c._id);
-                // setIsMobileMenuOpen(false);
+                setIsMobileMenuOpen(false); // Close the sidebar when a chat is selected.
               }}
             >
               {c.title}
@@ -201,7 +215,7 @@ export default function Chat() {
               className="chat__standard-btn"
               onClick={() => {
                 setIsCreatingChat(true);
-                // setIsMobileMenuOpen(true);
+                setIsMobileMenuOpen(true);
               }}
             >
               Start New Chat
@@ -269,7 +283,7 @@ export default function Chat() {
                 </li>
               ))}
               {isSending && (
-                <li className="chat__message chat__message_assistant chat__message_type_thinking">
+                <li className="chat__message chat__message_type_assistant chat__message_type_thinking">
                   Thinking…
                 </li>
               )}

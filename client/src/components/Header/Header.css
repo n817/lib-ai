@@ -5,6 +5,15 @@
   padding: 10px 20px;
 }
 
+.header__menu-btn {
+  display: none;
+  width: 24px;
+  height: 24px;
+  background-image: url("../../assets/menu.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .header__logo {
   width: 25px;
   height: 25px;
@@ -31,4 +40,50 @@
 
 .header__nav-link:hover {
   background-color: rgb(150 121 217 / 0.1);
+}
+
+@media (max-width: 1200px) {
+  .header {
+    justify-content: flex-start;
+    gap: 12px;
+    position: relative;
+    border-bottom: 1px solid rgb(0 0 0 / 0.1);
+  }
+
+  .header_type_mobile {
+    justify-content: flex-start;
+  }
+
+  .header__menu-btn {
+    display: block;
+  }
+  
+  .header__nav_type_mobile {
+    min-height: 164px;
+    max-width: 255px;
+    width: 100%;
+    flex-direction: column;
+    gap: 7px;
+    justify-content: end;
+    align-items: start;
+    background: #fff;
+    position: fixed;
+    top: 47px;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+    padding: 7px 0 77px 16px;
+    z-index: 1;
+  }
+
+  .header__nav_type_mobile::before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100%;
+    border-bottom: 1px solid rgb(28 28 28 / 0.1);
+    transform: translate(-20px);
+    width: calc(100% + 20px);
+    margin-bottom: 7px;
+  }
 }
