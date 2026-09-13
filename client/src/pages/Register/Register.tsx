@@ -5,6 +5,10 @@ import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 import Logo from "../../assets/logo.svg";
 
+function getNavLinkClass({ isActive }: { isActive: boolean }) {
+  return isActive ? "form__nav-link form__nav-link_active" : "form__nav-link";
+}
+
 export default function Register() {
   const [submitError, setSubmitError] = useState("");
   const { values, errors, isValid, handleChange } = useFormWithValidation();
@@ -20,13 +24,10 @@ export default function Register() {
           Access your organisation's secure workspace
         </p>
         <nav className="form__nav-links">
-          <NavLink to="/login" className="form__nav-link">
+          <NavLink to="/login" className={getNavLinkClass}>
             Login
           </NavLink>
-          <NavLink
-            to="/register"
-            className="form__nav-link form__nav-link_active"
-          >
+          <NavLink to="/register" className={getNavLinkClass}>
             Register
           </NavLink>
         </nav>
