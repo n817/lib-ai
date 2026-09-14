@@ -87,42 +87,32 @@ export function registerUser(name: string, email: string, password: string) {
   });
 }
 
-export const getDocuments = async (): Promise<ApiResponse<LibraryDoc[]>> => {
-  await delay(700);
-  return {
-    success: true,
-    data: [
-      {
-        _id: "1",
-        title: "Code Review Guidelines",
-        fileName: "code-review-guidelines.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "2",
-        title: "API Reference",
-        fileName: "api-reference.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "3",
-        title: "Onboarding Guide",
-        fileName: "onboarding-guide.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "4",
-        title: "Code of Conduct",
-        fileName: "code_of_conduct.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    error: null,
-  };
+// Get documents
+export const getDocuments = (): Promise<ApiResponse<LibraryDoc[]>> => {
+  return request<LibraryDoc[]>(`${BASE_URL}/documents`);
+};
+
+// Upload document
+export const uploadDocument = async (
+  file: File,
+): Promise<ApiResponse<LibraryDoc>> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${BASE_URL}/documents`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error?.message || "Request failed");
+  }
+
+  return res.json();
 };
 
 export const getChats = async (): Promise<ApiResponse<Chat[]>> => {

@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import "./Library.css";
 
 import UploadArea from "../../components/UploadArea/UploadArea";
-import { getDocuments, type LibraryDoc } from "../../utils/api";
+import { getDocuments, uploadDocument, type LibraryDoc } from "../../utils/api";
 
 export default function Library() {
   const [documents, setDocuments] = useState<LibraryDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,25 +26,26 @@ export default function Library() {
     load();
   }, []);
 
-  const handleFileSelect = (file: File) => {
-    const newDoc: LibraryDoc = {
-      _id: Date.now().toString(),
-      title: file.name,
-      fileName: file.name,
-      userId: "local",
-      createdAt: new Date().toISOString(),
-    };
-    setDocuments([newDoc, ...documents]);
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const res = await uploadDocument(file);
+      if (res.data) {
+        setDocuments([res.data!, ...documents]);
+      }
+    } catch {
+      setError("Upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="library">
       <h1 className="library__title">Manage My Library</h1>
       <section className="library__content">
-        <p className="library__text">
-          Upload documents (PDF)
-        </p>
-        <UploadArea onFileSelect={handleFileSelect}></UploadArea>
+        <p className="library__text">Upload documents (PDF)</p>
+        <UploadArea onFileSelect={handleFileSelect} isUploading={isUploading} />
 
         {isLoading && (
           <p className="library__text library__text_type_message">
@@ -58,9 +60,7 @@ export default function Library() {
         )}
 
         {!isLoading && error && (
-          <p className="library__text library__text_type_error">
-            {error}
-          </p>
+          <p className="library__text library__text_type_error">{error}</p>
         )}
 
         {/* Rendering the list */}
@@ -78,7 +78,6 @@ export default function Library() {
             ))}
           </ul>
         )}
-        <button className="library__save-button">Save</button>
       </section>
     </div>
   );

@@ -40,7 +40,7 @@ export default function Intro() {
       <button
         type="button"
         className="intro__start-btn"
-        onClick={() => navigate("/knowledge")}
+        onClick={() => navigate("/library")}
       >
         Start
       </button>

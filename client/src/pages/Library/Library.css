@@ -62,25 +62,3 @@
 .library__delete-button:hover {
   opacity: 30%;
 }
-
-.library__save-button {
-  padding: 10px 16px;
-  gap: 10px;
-  background: #1c1c1c;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 21px;
-  color: #ffffff;
-  margin-top: 32px;
-}
-
-.library__save-button:hover {
-  background:
-    linear-gradient(
-      360deg,
-      rgba(150, 121, 217, 0.4) 0%,
-      rgba(150, 121, 217, 0) 100%
-    ),
-    #1c1c1c;
-}
