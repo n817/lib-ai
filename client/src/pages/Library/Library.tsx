@@ -38,7 +38,7 @@ export default function Library() {
 
   return (
     <div className="library">
-      <h1 className="library__title">Manage Your Library</h1>
+      <h1 className="library__title">Manage My Library</h1>
       <section className="library__content">
         <p className="library__text">
           Upload documents (PDF)

@@ -1,6 +1,7 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
 
+import { ProtectedRoute, PublicRoute } from "../ProtectedRoute/ProtectedRoute";
 import Intro from "../../pages/Intro/Intro";
 import AppLayout from "../AppLayout/AppLayout";
 import Login from "../../pages/Login/Login";
@@ -13,11 +14,15 @@ function App() {
     <div className="app">
       <Routes>
         <Route path="/" element={<Intro />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
         <Route element={<AppLayout />}>
-          <Route path="/library" element={<Library />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/library" element={<Library />} />
+            <Route path="/chat" element={<Chat />} />
+          </Route>
         </Route>
       </Routes>
     </div>
