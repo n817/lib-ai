@@ -43,6 +43,7 @@ export default function Chat() {
     useOutletContext<MobileContext>();
 
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLLIElement>(null);
 
   // Load existing chats list
   useEffect(() => {
@@ -80,6 +81,11 @@ export default function Chat() {
 
     load();
   }, [activeChatId]);
+
+  // Automatically scroll the chat to the latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Create new chat
   const handleCreateChat = async () => {
@@ -290,7 +296,7 @@ export default function Chat() {
                   Thinking…
                 </li>
               )}
-              {/* <li ref={messagesEndRef} /> */}
+              <li ref={messagesEndRef} />
             </ul>
             <div className="chat__input-bar">
               <textarea
