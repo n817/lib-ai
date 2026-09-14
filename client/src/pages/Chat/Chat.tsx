@@ -119,7 +119,10 @@ export default function Chat() {
     try {
       const res = await sendMessage(activeChatId, text);
       if (res.data) {
-        setMessages((prev) => [...prev, res.data!]);
+        setMessages((prev) => [
+          ...prev.filter((m) => m._id !== userMessage._id),
+          ...res.data!,
+        ]);
       }
     } catch {
       // Append an error Message to the thread

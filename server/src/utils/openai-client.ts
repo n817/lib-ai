@@ -20,3 +20,7 @@ export const buildContext = (chunks: { text: string }[]): string => {
   if (chunks.length === 0) return 'No relevant context found.';
   return chunks.map((chunk, i) => `Chunk ${i + 1}: ${chunk.text}`).join('\n\n');
 };
+
+// Strip model reasoning from responses
+export const stripThinking = (text: string): string =>
+  text.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
