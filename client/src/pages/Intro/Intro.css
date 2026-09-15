@@ -9,14 +9,17 @@
 }
 
 .intro__title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   font-size: 48px;
   font-weight: 700;
   margin: 0 0 32px;
 }
 
 .intro__logo {
-  width: 36.5px;
-  height: 43px;
+  width: 130px;
+  height: 90px;
   display: inline;
 }
 
