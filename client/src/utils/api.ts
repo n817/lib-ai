@@ -2,8 +2,6 @@ import type { CurrentUser } from "../types";
 
 const BASE_URL = "/api";
 
-const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-
 export type LibraryDoc = {
   _id: string;
   title: string;

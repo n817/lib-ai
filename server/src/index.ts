@@ -12,6 +12,8 @@ import mainRouter from './routes/index.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 app.use(requestLogger);
 
 // health check route
