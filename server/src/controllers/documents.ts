@@ -8,13 +8,32 @@ import Chunk from '../models/chunk.js';
 import { chunkText } from '../utils/chunk.js';
 import { createEmbedding } from '../utils/embeddings.js';
 
+import {
+  deleteCacheValue,
+  getCacheValue,
+  setCacheValue,
+} from '../middleware/cache.js';
+
 // List documents for current user (GET /documents)
 export const getDocuments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
+  // Retrieve the cached value
+  const cacheKey = `documents-list:${req.user!.userId}`;
+  const cached = getCacheValue(cacheKey);
+  if (cached) {
+    res.status(200).json(cached);
+    return;
+  }
+
   const userId = req.user!.userId;
   const documents = await Document.find({ userId });
+
+  const responseData = { data: documents };
+
+  setCacheValue(cacheKey, responseData, 30 * 1000);
+
   res.status(200).json({
     success: true,
     data: documents,
@@ -55,6 +74,9 @@ export const uploadDocument = async (req: Request, res: Response) => {
     fileName: req.file.originalname,
     userId: req.user!.userId,
   });
+
+  const cacheKey = `documents-list:${req.user!.userId}`;
+  deleteCacheValue(cacheKey);
 
   await Promise.all(
     chunks.map(async (chunk) =>
