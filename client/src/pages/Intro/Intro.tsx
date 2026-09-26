@@ -12,7 +12,7 @@ export default function Intro() {
   return (
     <div className="intro">
       <h1 className="intro__title">
-        Welcome to LibAI <img src={Logo} alt="" className="intro__logo" />
+        Welcome to BaseAI <img src={Logo} alt="" className="intro__logo" />
       </h1>
       <ul className="intro__cards">
         <li className="intro__card">
@@ -24,13 +24,13 @@ export default function Intro() {
         <li className="intro__card">
           <img src={CardIcon2} alt="" className="intro__card-icon" />
           <p className="intro__card-text">
-            <span>2. Let AI Process Them</span> LibAI processes your documents and prepares them for intelligent search.
+            <span>2. Let AI Process Them</span> BaseAI processes your documents and prepares them for intelligent search.
           </p>
         </li>
         <li className="intro__card">
           <img src={CardIcon3} alt="" className="intro__card-icon" />
           <p className="intro__card-text">
-             <span>3. Ask AI</span> Ask questions in a simple chat and get answers based on the information in your documents.
+             <span>3. Ask & Benchmark LLMs</span> Ask questions in chat to test LLM responses and find the best fit for your business.
           </p>
         </li>
       </ul>
