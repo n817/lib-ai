@@ -101,7 +101,9 @@ export default function Chat() {
         setActiveChatId(res.data._id);
         setIsMobileMenuOpen(false); // Close the sidebar after a new chat is created.
       }
-    } catch {}
+    } catch {
+      // An inline error could go here in the future
+    }
   };
 
   // Message send handler
